@@ -1,0 +1,11 @@
+{
+    "name": "Pensieve",
+    "version": "0.1",
+    "description": "Research stuff!",
+    "manifest_version": 2,
+    "permissions": ["window", "tabs", "storage", "contextMenus", "history"],
+    "background": {
+        "scripts": ["background.js"],
+        "persistent": false
+    }
+}
