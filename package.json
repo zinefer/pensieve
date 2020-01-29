@@ -1,0 +1,9 @@
+{
+    "scripts": {
+        "test": "jest"
+    },
+    "devDependencies": {
+        "jest": "^25.1.0",
+        "sinon-chrome": "^3.0.1"
+    }
+}

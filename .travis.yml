@@ -1,0 +1,12 @@
+dist: bionic
+
+language: node_js
+node_js:
+  - 10
+
+cache: npm
+
+# Only clone the most recent commit.
+git:
+  depth: 1
+
