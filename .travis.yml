@@ -10,3 +10,5 @@ cache: npm
 git:
   depth: 1
 
+after_script:
+  - npm run coveralls

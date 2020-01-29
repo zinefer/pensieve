@@ -1,8 +1,10 @@
 {
     "scripts": {
-        "test": "jest"
+        "test": "jest",
+        "coveralls": "jest --coverage && cat ./coverage/lcov.info | coveralls"
     },
     "devDependencies": {
+        "coveralls": "^3.0.9",
         "jest": "^25.1.0",
         "sinon-chrome": "^3.0.1"
     }
