@@ -86,14 +86,21 @@ chrome.tabs.onCreated.addListener(function(tab) {
     addNewActivity(tab);
 });
 
-chrome.windows.onRemoved.addListener(function(windowID) {
-    download("Pensieve", JSON.stringify(state.windows[windowID].children));
+chrome.tabs.onUpdated.addListener(function(tabId, changes) {
+    if (changes.url && state.windex[tabId]) {
+        var tab = {
+            id: tabId,
+            openerTabId: tabId,
+            windowId: state.windex[tabId],
+            pendingUrl: changes.url
+        }
+
+        addNewActivity(tab);
+    }
 });
 
-chrome.tabs.onUpdated.addListener(function(tabID, changes) {
-    if (changes.url && state.windex[tabID]) {
-        console.log(tabID, changes);
-    }
+chrome.windows.onRemoved.addListener(function(windowId) {
+    download("Pensieve", JSON.stringify(state.windows[windowId].children));
 });
 
 function download(file, text) { 

@@ -58,13 +58,18 @@ test('an existing tab changes url creates some activity', () => {
     var changes = {url: "http://jameskiefer.com"};
     
     chrome.tabs.onUpdated.dispatch(tabId, changes);
+    expect(window.state.windows[667].children[124].children[125].children[125]).toBeTruthy();
+    expect(window.state.windows[667].index[125]).toBeTruthy();
 });
 
 test('an untracked tab changes url creates no activity', () => {
     var tabId = 999;
     var changes = {url: "http://jameskiefer.com"};
+
+    var curState = JSON.stringify(window.state.windows.children);
     
     chrome.tabs.onUpdated.dispatch(tabId, changes);
+    expect(curState).toBe(JSON.stringify(window.state.windows.children))
 });
 
 test('a file is downloaded when the window is closed', () => {
