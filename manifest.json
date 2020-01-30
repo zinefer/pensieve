@@ -3,7 +3,7 @@
     "version": "0.1",
     "description": "Research stuff!",
     "manifest_version": 2,
-    "permissions": ["window", "tabs", "storage", "contextMenus", "history"],
+    "permissions": ["window", "tabs", "storage", "contextMenus", "history", "http://*/", "https://*/"],
     "background": {
         "scripts": ["background.js"],
         "persistent": false

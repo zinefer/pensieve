@@ -72,6 +72,37 @@ test('an untracked tab changes url creates no activity', () => {
     expect(curState).toBe(JSON.stringify(window.state.windows.children))
 });
 
+test('selecting some text saves a footnote', () => {
+    var tab = Object.create(fakeTab);
+    tab.id = 124;
+    var message = {'message':'text-selected','data': "HelloMoto"};
+    chrome.runtime.onMessage.dispatch(message, {tab: tab});
+    var footnote = window.state.windows[tab.windowId].children[tab.id].footnotes[0];
+    expect(footnote.note).toBe("HelloMoto");
+    expect(footnote.star).toBeFalsy();
+});
+
+test('copying some text saves a starred footnote', () => {
+    var tab = Object.create(fakeTab);
+    tab.id = 124;
+    var message = {'message':'text-copied','data': "Severus Snape"};
+    chrome.runtime.onMessage.dispatch(message, {tab: tab});
+    var footnote = window.state.windows[tab.windowId].children[tab.id].footnotes[1];
+    expect(footnote.note).toBe("Severus Snape");
+    expect(footnote.star).toBeTruthy();
+});
+
+test('sending some random message does nothing because code coverage', () => {
+    var tab = Object.create(fakeTab);
+    tab.id = 124;
+    var message = {'message':'do-nothing-please','data': "Severus Snape"};
+    
+    var expected = JSON.stringify(window.state.windows.children);
+    chrome.runtime.onMessage.dispatch(message, {tab: tab});
+    expect(expected).toBe(JSON.stringify(window.state.windows.children));
+});
+
+
 test('a file is downloaded when the window is closed', () => {
     var appended = false, removed = false, clicked = false;
 

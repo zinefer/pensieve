@@ -45,6 +45,13 @@ function newActivity(title) {
     }
 }
 
+function newFootnote(note, star) {
+    return {
+        note: note,
+        star: star === true
+    }
+}
+
 function addNewWindow(window) {
     var pTab = window.tabs[0];
     state.windows[window.id] = newWindow();
@@ -61,9 +68,20 @@ function addNewActivity(tab) {
         parent = parent.index[tab.openerTabId];
     }
 
+    // Register in page listeners
+    chrome.tabs.executeScript(tab.id, {
+        file: 'listeners.js'
+    });
+
     parent.children[tab.id] = newActivity(tab.pendingUrl);
     state.windows[tab.windowId].index[tab.id] = parent.children[tab.id];
     state.windex[tab.id] = tab.windowId;
+}
+
+function addActivityFootnote(tab, footnote, starred) {
+    state.windows[tab.windowId].index[tab.id].footnotes.push(
+        newFootnote(footnote, starred)
+    );
 }
 
 chrome.runtime.onInstalled.addListener(function() {
@@ -96,6 +114,19 @@ chrome.tabs.onUpdated.addListener(function(tabId, changes) {
         }
 
         addNewActivity(tab);
+    }
+});
+
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+    switch (request.message) {
+        case 'text-selected':
+            addActivityFootnote(sender.tab, request.data)
+            break;
+        case 'text-copied':
+            addActivityFootnote(sender.tab, request.data, true)
+            break;
+        default:
+            break;
     }
 });
 
