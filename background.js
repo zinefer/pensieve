@@ -56,7 +56,7 @@ function addNewWindow(window) {
     var pTab = window.tabs[0];
     state.windows[window.id] = newWindow();
     state.windows[window.id].children[pTab.id] = newActivity("Pensieve");
-    state.windows[window.id].index[pTab.id] = state.windows[window.id];    
+    state.windows[window.id].index[pTab.id] = state.windows[window.id];
 }
 
 function addNewActivity(tab) {
@@ -125,13 +125,16 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         case 'text-copied':
             addActivityFootnote(sender.tab, request.data, true)
             break;
+        case 'get-state':
+            sendResponse(state.windows[sender.tab.windowId].children);
+            break;
         default:
             break;
     }
 });
 
 chrome.windows.onRemoved.addListener(function(windowId) {
-    download("Pensieve", JSON.stringify(state.windows[windowId].children));
+    //download("Pensieve", JSON.stringify(state.windows[windowId].children));
 });
 
 function download(file, text) { 
