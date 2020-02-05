@@ -4,24 +4,32 @@ window.addEventListener("focus", function(event){
         clearChildren(list);
 
         list.appendChild(activityList(response));
+
+        var pTab = response[Object.keys(response)[0]];
+        var nTab = response[pTab.activities[1].tabId];
+
+        list.appendChild(recurseTab(nTab, response));
     });
 }, false);
 
-function activityList(activities) {
+function recurseTab(tab, tabs) {
     var ul = document.createElement("ul");
-    
-    for (i in activities) {
-        var activity = activities[i];
-        var text = document.createTextNode(activity.title);
-        var li = document.createElement("li");
-        li.appendChild(text);
-        ul.appendChild(li);
-        if (Object.keys(activity.children).length) {
-            ul.appendChild(activityList(activity.children))
-        }
-    }    
 
-    return ul;    
+    tab.activities.forEach(activity => {
+        switch (activity.type) {
+            case 'tab':
+                ul.appendChild(recurseTab(tabs[activity.tabId], tabs));
+                break;  
+            case 'url':
+                var text = document.createTextNode(activity.title);
+                var li = document.createElement("li");
+                li.appendChild(text);
+                ul.appendChild(li);
+                break;
+        }
+    });
+
+    return ul;
 }
 
 function clearChildren(el) {

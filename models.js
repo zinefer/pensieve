@@ -1,9 +1,12 @@
-function Window() {
+function Window(pensieve, id) {
+    this.pensieve = pensieve;
+    this.id = id;
     this.tabs = {};
 }
 
-function Tab() {
-    this.actvities = [];
+function Tab(id) {
+    this.id = id;
+    this.activities = [];
     this.closed = false;
 }
 
@@ -11,7 +14,7 @@ function Activity(type, options) {
     this.type = type;
     this.title = options.title;
     this.url = options.url;
-    this.tab_id = options.tab_id;
+    this.tabId = options.tabId;
 
     this.notes = [];
 }
@@ -21,26 +24,71 @@ function Note(text, star) {
     this.star = (star == true);
 }
 
-Activity.prototype.addNote(text, star) {
-   this.notes.push(new Note(text, star));
+Activity.prototype.addNote = function(text, star) {
+    var note = new Note(text, star);
+    this.notes.push(note);
+    return note;
 }
 
-Tab.prototype.addActivity(type, options) {
-    this.actvities.push(new Activity(type, options));
+Tab.prototype.addActivity = function(type, options) {
+    var activity = new Activity(type, options);
+    
+    if (this.currentActivity() == activity) {
+        // Do not push a duplicate activity
+        return this.currentActivity();
+    }
+
+    this.activities.push(activity);
+    return activity;
+}
+
+Tab.prototype.currentActivity = function () {
+    return this.activities[this.activities.length - 1];
 }
 
 Window.prototype.addTab = function(id) {
-    this.tabs[id] = new Tab();
+    var tab = new Tab(id);
+    this.pensieve.indexTab(tab);
+    return this.tabs[id] = tab;
+}
+
+Window.prototype.isTabTracked = function(id) {
+    return typeof this.tabs[id] != 'undefined';
 }
 
 //************* */
 
 function Pensieve() {
-    this.state = { 
-        windows: {}
-    };
+    this.windows = {};
+    this.tabIndex = {};
 }
 
 Pensieve.prototype.addWindow = function(id) {
-    this.state.windows[id] = new Window();
+    return this.windows[id] = new Window(this, id);
+}
+
+Pensieve.prototype.isWindowTracked = function(id) {
+    return typeof this.windows[id] != 'undefined';
+}
+
+Pensieve.prototype.isTabTracked = function(id) {
+    return typeof this.tabIndex[id] != 'undefined';
+}
+
+Pensieve.prototype.indexTab = function(tab) {
+    this.tabIndex[tab.id] = tab;
+}
+
+Pensieve.prototype.getTab = function(id) {
+    return this.tabIndex[id];
+}
+
+/*
+Pensieve.prototype.getWindowFromTab = function(id) {
+    return this.getWindow(this.windex[id]);
+}
+*/
+
+Pensieve.prototype.getWindow = function(id) {
+    return this.windows[id];
 }
