@@ -1,3 +1,8 @@
+const ignoredUrls = [
+    "chrome://newtab",
+    "chrome://newtab/"
+]
+
 var p = new Pensieve();
 
 // New Window Button
@@ -41,8 +46,12 @@ chrome.tabs.onCreated.addListener(function(tab) {
 // tab.onUpdated
 chrome.tabs.onUpdated.addListener(function(tabId, changes) {
     if (p.isTabTracked(tabId)) {
+        if (changes.title) {
+            p.getTab(tabId).currentActivity().title = changes.title;
+        }
+
         if (changes.url) {
-            if (changes.url == "chrome://newtab") return;
+            if (ignoredUrls.indexOf(changes.url) >= 0) return;
 
             chrome.tabs.get(tabId, function(tab){
                 var options = Object.assign(tab, changes);

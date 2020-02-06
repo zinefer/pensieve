@@ -6,9 +6,12 @@ window.addEventListener("focus", function(event){
         list.appendChild(activityList(response));
 
         var pTab = response[Object.keys(response)[0]];
-        var nTab = response[pTab.activities[1].tabId];
+        pTab.activities.shift()
+        //var nTab = response[pTab.activities[1].tabId];
 
-        list.appendChild(recurseTab(nTab, response));
+        out = recurseTab(pTab, response);
+        out.className = "tree";
+        list.appendChild(out);
     });
 }, false);
 
@@ -16,17 +19,22 @@ function recurseTab(tab, tabs) {
     var ul = document.createElement("ul");
 
     tab.activities.forEach(activity => {
+        var li = document.createElement("li");
         switch (activity.type) {
             case 'tab':
-                ul.appendChild(recurseTab(tabs[activity.tabId], tabs));
+                var text = document.createTextNode("➤ New Tab");
+                li.appendChild(text);
+                li.appendChild(recurseTab(tabs[activity.tabId], tabs));
                 break;  
             case 'url':
                 var text = document.createTextNode(activity.title);
-                var li = document.createElement("li");
-                li.appendChild(text);
-                ul.appendChild(li);
+                var link = document.createElement('a');
+                link.href = activity.url;
+                link.appendChild(text);
+                li.appendChild(link);
                 break;
         }
+        ul.appendChild(li);
     });
 
     return ul;
