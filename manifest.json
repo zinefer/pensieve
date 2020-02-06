@@ -5,7 +5,7 @@
     "manifest_version": 2,
     "permissions": ["window", "tabs", "storage", "contextMenus", "history", "http://*/", "https://*/"],
     "background": {
-        "scripts": ["models.js","background.js"],
+        "page": "background.html",
         "persistent": false
     }
 }

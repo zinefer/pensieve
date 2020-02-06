@@ -3,6 +3,8 @@ const ignoredUrls = [
     "chrome://newtab/"
 ]
 
+import Pensieve from './models.js'
+
 var p = new Pensieve();
 
 // New Window Button
@@ -41,7 +43,7 @@ chrome.tabs.onCreated.addListener(function(tab) {
 // tab.onUpdated
 chrome.tabs.onUpdated.addListener(function(tabId, changes) {
     if (p.isTabTracked(tabId)) {
-        if (changes.title) {
+        if (changes.title && p.getTab(tabId).currentActivity()) {
             p.getTab(tabId).currentActivity().title = changes.title;
         }
 

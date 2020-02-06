@@ -3,8 +3,6 @@ window.addEventListener("focus", function(event){
         var list = document.getElementById('list');
         clearChildren(list);
 
-        list.appendChild(activityList(response));
-
         var pTab = response[Object.keys(response)[0]];
         pTab.activities.shift()
         //var nTab = response[pTab.activities[1].tabId];
