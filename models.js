@@ -9,9 +9,6 @@ class Window {
         this.pensieve.indexTab(tab);
         return this.tabs[id] = tab;
     }
-    isTabTracked(id) {
-        return typeof this.tabs[id] != 'undefined';
-    }
 };
 
 class Tab {
@@ -22,8 +19,9 @@ class Tab {
     }
     addActivity(type, options) {
         var activity = new Activity(type, options);
+        var current = this.currentActivity();
         
-        if (this.currentActivity() == activity) {
+        if (current && activity.equals(current)) {
             // Do not push a duplicate activity
             return this.currentActivity();
         }
@@ -66,6 +64,12 @@ class Activity {
         this.notes.push(note);
         return note;
     }
+    equals(activity) {
+        return this.type == activity.type && 
+               this.title == activity.title &&
+               this.url == activity.url &&
+               this.tabId == activity.tabId;
+    }
 }
 
 class Note {
@@ -100,4 +104,4 @@ class Pensieve {
     }
 }
 
-export default Pensieve
+export { Pensieve, Activity, Tab, Window, Note }

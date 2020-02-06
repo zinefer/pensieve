@@ -3,7 +3,7 @@ const ignoredUrls = [
     "chrome://newtab/"
 ]
 
-import Pensieve from './models.js'
+import { Pensieve } from './models.js'
 
 var p = new Pensieve();
 
