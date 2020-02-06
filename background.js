@@ -34,11 +34,6 @@ chrome.tabs.onCreated.addListener(function(tab) {
     }
 
     if (p.isWindowTracked(tab.windowId)) {
-        // Register in-page listeners
-        chrome.tabs.executeScript(tab.id, {
-            file: 'listeners.js'
-        });
-
         p.getWindow(tab.windowId).addTab(tab.id);
     }
 });
@@ -52,6 +47,11 @@ chrome.tabs.onUpdated.addListener(function(tabId, changes) {
 
         if (changes.url) {
             if (ignoredUrls.indexOf(changes.url) >= 0) return;
+
+            // Register in-page listeners
+            chrome.tabs.executeScript(tabId, {
+                file: 'listeners.js'
+            });
 
             chrome.tabs.get(tabId, function(tab){
                 var options = Object.assign(tab, changes);
@@ -68,6 +68,7 @@ chrome.tabs.onUpdated.addListener(function(tabId, changes) {
 // runtime.onMessage
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     var window = p.getWindow(sender.tab.windowId);
+    console.log(request);
     switch (request.message) {
         case 'text-selected':
             p.getTab(sender.tab.id).currentActivity().addNote(request.data);

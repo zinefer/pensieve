@@ -17,9 +17,11 @@ window.addEventListener("focus", function(event){
 
 function recurseTab(tab, tabs) {
     var ul = document.createElement("ul");
+    ul.className = "activity";
 
     tab.activities.forEach(activity => {
         var li = document.createElement("li");
+        li.className = "activity";
         switch (activity.type) {
             case 'tab':
                 var text = document.createTextNode("➤ New Tab");
@@ -34,6 +36,22 @@ function recurseTab(tab, tabs) {
                 li.appendChild(link);
                 break;
         }
+
+        var notes = document.createElement('ul');
+        activity.notes.forEach(note => {
+            var text = document.createTextNode(note.text);
+            var li = document.createElement("li");
+            li.appendChild(text);
+
+            if (note.star) {
+                li.className = "star";
+            }
+
+            notes.appendChild(li);
+        });
+
+        li.appendChild(notes);
+
         ul.appendChild(li);
     });
 

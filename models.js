@@ -26,6 +26,22 @@ function Note(text, star) {
 
 Activity.prototype.addNote = function(text, star) {
     var note = new Note(text, star);
+    
+    var duplicate = false;
+    this.notes.forEach(note => {
+        if (text == note.text) {
+            if (star != note.star) {
+                note.star = star;
+            }
+
+            duplicate = true;
+        }
+    });
+
+    if (duplicate) {
+        return;
+    }   
+    
     this.notes.push(note);
     return note;
 }
