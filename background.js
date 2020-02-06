@@ -43,8 +43,9 @@ chrome.tabs.onCreated.addListener(function(tab) {
 // tab.onUpdated
 chrome.tabs.onUpdated.addListener(function(tabId, changes) {
     if (p.isTabTracked(tabId)) {
-        if (changes.title && p.getTab(tabId).currentActivity()) {
-            p.getTab(tabId).currentActivity().title = changes.title;
+        var activity = p.getTab(tabId).currentActivity();
+        if (changes.title && activity) {
+            activity.title = changes.title;
         }
 
         if (changes.url) {
@@ -70,7 +71,6 @@ chrome.tabs.onUpdated.addListener(function(tabId, changes) {
 // runtime.onMessage
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     var window = p.getWindow(sender.tab.windowId);
-    console.log(request);
     switch (request.message) {
         case 'text-selected':
             p.getTab(sender.tab.id).currentActivity().addNote(request.data);
@@ -88,7 +88,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
 chrome.windows.onRemoved.addListener(function(windowId) {
     if (p.isWindowTracked(windowId)) {
-        //download("Pensieve", JSON.stringify(p.getWindow(windowId)));
+        download("Pensieve", JSON.stringify(p.getWindow(windowId).tabs));
     }
 });
 
@@ -100,3 +100,5 @@ function download(file, text) {
     element.click(); 
     document.body.removeChild(element); 
 }
+
+export default p
